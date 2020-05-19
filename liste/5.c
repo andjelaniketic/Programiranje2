@@ -1,27 +1,25 @@
 #include "liste.h"
 
-cvor *naizmenicno(cvor *L1, cvor *L2){
-	if(L1 == NULL)
-		return L2;
-	if(L2 == NULL)
-		return L1;
+void umetni(cvor *lista){
+	if(lista->sledeci == NULL || lista == NULL)
+		return;
 	
-	L1->sledeci = naizmenicno(L2, L1->sledeci);
-	return L1;
+	cvor *pom = lista->sledeci;
+	cvor *novi = napravi_cvor(lista->vrednost - lista->sledeci->vrednost);
+	lista->sledeci = novi;
+	novi->sledeci = pom;
 	
+	umetni(novi->sledeci);
+	return;
 }
 
 int main(){
-	cvor *L1 = NULL;
-	cvor *L2 = NULL;
+	cvor *lista = NULL;
+	ucitaj_listu(&lista, stdin);
 	
-	ucitaj_listu(&L1, stdin);
-	ucitaj_listu(&L2, stdin);
+	umetni(lista);
+	ispisi_listu(lista, stdout);
 	
-	cvor *L3 = naizmenicno(L1, L2);
-	ispisi_listu(L3, stdout);
-	
-	
-	oslobodi_listu(L3);
+	oslobodi_listu(lista);
 	return 0;
 }

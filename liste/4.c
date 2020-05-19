@@ -1,70 +1,39 @@
 #include "liste.h"
 
-cvor* izbaci1(cvor *lista, int broj){
-	if(lista == NULL)
-		return lista;
-	if(lista->vrednost == broj){
-		cvor* pom = lista->sledeci;
-		free(lista);
-		return pom;
-	}else{
-		lista->sledeci = izbaci1(lista->sledeci, broj);
-		return lista;
+void obrisi_cvor(cvor **lista1, int x){
+	if(*lista1 == NULL)
+		return;
+	else if((*lista1)->vrednost == x){
+		cvor *tmp = *lista1;
+		*lista1 = (*lista1)->sledeci;
+		free(tmp);
+		obrisi_cvor(lista1, x);
 	}
-	
+	else
+		obrisi_cvor(&(*lista1)->sledeci, x);
 }
-
-int postoji(cvor *lista, int broj){
-	if(lista == NULL)
-		return 0;
+cvor *izbaci(cvor *lista1, cvor *lista2){
+	if(lista2 == NULL)
+		return lista1;
 	
-	if(lista->vrednost == broj)
-		return 1;
-	
-	return postoji(lista->sledeci, broj);
-}
-
-cvor* izbaci2(cvor *lista, int broj){
-	if(lista == NULL)
-		return lista;
-	if(lista->vrednost == broj && !postoji(lista->sledeci, broj)){
-		cvor* pom = lista->sledeci;
-		free(lista);
-		return pom;
-	}else{
-		lista->sledeci = izbaci2(lista->sledeci, broj);
-		return lista;
+	while(lista2){
+		obrisi_cvor(&lista1, lista2->vrednost);
+		lista2 = lista2->sledeci;
 	}
-	
-}
-
-cvor *izbaci3(cvor *lista, int broj){
-	if(lista == NULL)
-		return NULL;
-	
-	cvor* pom = NULL;
-	if(lista->vrednost == broj){
-		pom = lista->sledeci;
-		free(lista);
-		return izbaci3(pom, broj);
-	}else{
-		lista->sledeci = izbaci3(lista->sledeci, broj);
-		return lista;
-	}
+	return lista1;
 }
 
 int main(){
-	cvor *lista = NULL;
-	ucitaj_listu(&lista, stdin);
+	cvor *lista1 = NULL;
+	cvor *lista2 = NULL;
 	
-	int broj;
-	scanf("%d", &broj);
+	ucitaj_listu(&lista1, stdin);
+	ucitaj_listu(&lista2, stdin);
 	
-	//cvor* rez = izbaci1(lista, broj);
-	cvor* rez = izbaci3(lista, broj);
+	lista1 = izbaci(lista1, lista2);
+	ispisi_listu(lista1, stdout);
 	
-	ispisi_listu(rez, stdout);
-	
-	oslobodi_listu(rez);
+	oslobodi_listu(lista1);
+	oslobodi_listu(lista2);
 	return 0;
 }
