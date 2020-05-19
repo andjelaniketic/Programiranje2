@@ -1,34 +1,33 @@
 #include "liste.h"
 
-int u_listi(int x, cvor *lista){
-	while(lista){
-		if(lista->vrednost == x)
-			return 1;
-		lista = lista->sledeci;
+cvor* dodaj_element(cvor* lista, int broj){
+	if(lista == NULL){
+		cvor* novi = napravi_cvor(broj);
+		return novi;
 	}
-	return 0;
-}
-int suma(cvor *lista1, cvor *lista2){
-	int suma = 0;
-	cvor *glava1 = lista1;
-	while(glava1){
-		if(!u_listi(glava1->vrednost, lista2))
-			suma += glava1->vrednost;
-		glava1 = glava1->sledeci;
+	
+	if(lista->vrednost > broj){
+		cvor* novi = napravi_cvor(broj);
+		novi->sledeci = lista;
+		return novi;
 	}
-	return suma;
+	else
+		lista->sledeci = dodaj_element(lista->sledeci, broj);
+	
 }
-
-int main(){
-	cvor *lista1 = NULL;
-	cvor *lista2 = NULL;
-	ucitaj_listu(&lista1, stdin);
-	ucitaj_listu(&lista2, stdin);
+int main(int argc, char **argv){
+	/*if(argv != 2)
+		greska();
+	*/
+	cvor* lista = NULL;
+	ucitaj_listu(&lista, stdin);
 	
-	int rez = suma(lista1, lista2);
-	printf("%d\n", rez);
+	int broj;
+	scanf("%d", &broj);
 	
-	oslobodi_listu(lista1);
-	oslobodi_listu(lista2);
+	cvor* rez = dodaj_element(lista, broj);
+	ispisi_listu(rez, stdout);
+	
+	oslobodi_listu(lista);
 	return 0;
-}
+} 
